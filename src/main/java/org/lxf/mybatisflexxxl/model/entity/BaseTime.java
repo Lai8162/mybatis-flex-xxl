@@ -8,7 +8,7 @@ import org.lxf.mybatisflexxxl.common.annotation.Level;
 import java.util.Date;
 
 /**
- * 公共时间/用户
+ * 公共时间-创建/更新时间
  *
  * @author lxf
  * @version 1.0
@@ -16,18 +16,10 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BaseTimeOrUser extends BaseLongId {
-    @Level(1)
-    private Long creatorId;
-
-    @Level(1)
-    private Long modifierId;
-
-    @Level
+public class BaseTime extends BaseLongId {
     @Column(onInsertValue = "now()")
     private Date createTime;
 
-    @Level
     @Column(onInsertValue = "now()")
     private Date modifyTime;
 }

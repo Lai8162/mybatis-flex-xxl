@@ -1,9 +1,7 @@
 package org.lxf.mybatisflexxxl.model.vo;
 
-import com.mybatisflex.annotation.RelationOneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.lxf.mybatisflexxxl.common.annotation.Level;
 import org.lxf.mybatisflexxxl.model.entity.UserEntity;
 
 /**
@@ -16,11 +14,4 @@ import org.lxf.mybatisflexxxl.model.entity.UserEntity;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserVO extends UserEntity {
-    @RelationOneToOne(selfField = "creatorId", targetField = "id")
-    @Level(2)
-    private UserEntity creator;
-
-    @RelationOneToOne(selfField = "modifierId", targetField = "id")
-    @Level(2)
-    private UserEntity modifier;
 }

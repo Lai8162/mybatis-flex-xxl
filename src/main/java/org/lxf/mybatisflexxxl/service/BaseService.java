@@ -1,14 +1,16 @@
 package org.lxf.mybatisflexxxl.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.io.resource.ClassPathResource;
 import com.alibaba.excel.EasyExcel;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.cursor.Cursor;
 import org.lxf.mybatisflexxxl.common.enumcase.FilterTypeEnum;
 import org.lxf.mybatisflexxxl.common.enumcase.MetricTypeEnum;
 import org.lxf.mybatisflexxxl.common.enumcase.ResponseCodeEnum;
@@ -17,11 +19,16 @@ import org.lxf.mybatisflexxxl.common.response.DeleteResponse;
 import org.lxf.mybatisflexxxl.common.util.FieldNameUtil;
 import org.lxf.mybatisflexxxl.form.*;
 import org.lxf.mybatisflexxxl.model.demo.BaseDTOCastDemo;
+import org.lxf.mybatisflexxxl.model.entity.UserEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.mybatisflex.core.query.QueryMethods.sum;
 
@@ -40,14 +47,41 @@ public interface BaseService<Entity> extends IService<Entity> {
      * @param clazz         类定义
      * @return Page mybatisFlex分页对象
      */
-    default <DTO> Page<?> pageQuery(PageQueryForm pageQueryForm, Class<DTO> clazz) {
+    default <DTO> Page<?> basePageQuery(PageQueryForm pageQueryForm, Class<DTO> clazz) {
         QueryWrapper queryWrapper = new QueryWrapper();
+        return basePageQuery(queryWrapper, pageQueryForm, clazz);
+    }
+
+    /**
+     * 基础分页查询
+     *
+     * @param queryWrapper  查询wrapper
+     * @param pageQueryForm 查询表单
+     * @param clazz         类定义
+     * @return Page mybatisFlex分页对象
+     */
+    default <DTO> Page<?> basePageQuery(QueryWrapper queryWrapper, PageQueryForm pageQueryForm, Class<DTO> clazz) {
+        return basePageQuery(queryWrapper, pageQueryForm, clazz, true);
+    }
+
+    /**
+     * 基础分页查询
+     *
+     * @param queryWrapper  查询wrapper
+     * @param pageQueryForm 查询表单
+     * @param clazz         类定义
+     * @param isHandleLevel 是否处理层级字段
+     * @return Page mybatisFlex分页对象
+     */
+    default <DTO> Page<?> basePageQuery(QueryWrapper queryWrapper, PageQueryForm pageQueryForm, Class<DTO> clazz, boolean isHandleLevel) {
         handleFilter(pageQueryForm.getFilters(), queryWrapper, clazz);
         handleOrder(pageQueryForm.getOrderField(), queryWrapper, clazz);
         Page<DTO> page = this.getMapper().paginateWithRelationsAs(pageQueryForm.getCurrentPage(), pageQueryForm.getPageSize(), queryWrapper, clazz);
         Page<Map<String, Object>> result = new Page<>();
         BeanUtil.copyProperties(page, result);
-        result.setRecords(handleLevel(page, pageQueryForm.getLevel()));
+        if (isHandleLevel) {
+            result.setRecords(handleLevel(page, pageQueryForm.getLevel()));
+        }
         return result;
     }
 
@@ -125,13 +159,13 @@ public interface BaseService<Entity> extends IService<Entity> {
     /**
      * 基础excel导出
      *
-     * @param response http响应
+     * @param response        http响应
      * @param excelExportForm 导出查询表单
-     * @param fileName 文件名
-     * @param dtoClazz dto类型
-     * @param demoClazz demo类型
-     * @param <DTO> dto泛型定义
-     * @param <DEMO> demo泛型定义
+     * @param fileName        文件名
+     * @param dtoClazz        dto类型
+     * @param demoClazz       demo类型
+     * @param <DTO>           dto泛型定义
+     * @param <DEMO>          demo泛型定义
      * @throws IOException io异常
      */
     default <DTO extends BaseDTOCastDemo<DTO, DEMO>, DEMO> void baseExcelExport(HttpServletResponse response, ExcelExportForm excelExportForm, String fileName, Class<DTO> dtoClazz, Class<DEMO> demoClazz) throws IOException {
@@ -147,6 +181,59 @@ public interface BaseService<Entity> extends IService<Entity> {
         List<DTO> exportList = this.getMapper().paginateWithRelationsAs(excelExportForm.getCurrentPage(), excelExportForm.getPageSize(), queryWrapper, dtoClazz).getRecords();
         List<DEMO> writeList = exportList.stream().map(data -> data.buildDemo(data)).toList();
         EasyExcel.write(response.getOutputStream(), demoClazz).sheet("详情").doWrite(writeList);
+    }
+
+    /**
+     * 导出excel上传模板
+     *
+     * @param response       响应
+     * @param filePathName   resources下模板文件名
+     * @param fileExportName 要导出的模板文件名
+     * @throws IOException 异常
+     */
+    default void baseTemplateExport(HttpServletResponse response, String filePathName, String fileExportName) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("UTF-8");
+
+        ClassPathResource resource = new ClassPathResource("excel/%s".formatted(filePathName));
+        String fileName = URLEncoder.encode(StringUtils.isNotBlank(fileExportName) ? fileExportName + ".xlsx" : filePathName, StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment;filename=%s".formatted(fileName));
+
+        try (InputStream is = resource.getStream()) {
+            EasyExcel.write(response.getOutputStream())
+                    .withTemplate(is)
+                    .needHead(false)
+                    .sheet()
+                    .doWrite(Collections.emptyList());
+        }
+    }
+
+    /**
+     * 基础游标处理
+     *
+     * @param queryWrapper  查询参数
+     * @param batchSize     批数量
+     * @param batchConsumer 消费者函数
+     */
+    @Transactional
+    default void baseCursor(QueryWrapper queryWrapper, int batchSize, Consumer<List<Entity>> batchConsumer) {
+        List<Entity> buffer = new ArrayList<>();
+
+        try (Cursor<Entity> cursor = this.getMapper().selectCursorByQuery(queryWrapper)) {
+            for (Entity entity : cursor) {
+                buffer.add(entity);
+                if (buffer.size() >= batchSize) {
+                    batchConsumer.accept(buffer);
+                    buffer.clear();
+                }
+            }
+            // 处理剩余记录
+            if (!buffer.isEmpty()) {
+                batchConsumer.accept(buffer);
+            }
+        } catch (Exception e) {
+            throw new BusinessException("处理中断", e);
+        }
     }
 
     /**
@@ -338,6 +425,14 @@ public interface BaseService<Entity> extends IService<Entity> {
         }
     }
 
+    /**
+     * 处理层级
+     *
+     * @param page  分页返回对象
+     * @param level 层级
+     * @param <DTO> 泛型对象
+     * @return 包括需要字段的Map列表
+     */
     private <DTO> List<Map<String, Object>> handleLevel(Page<DTO> page, int level) {
         try {
             List<Map<String, Object>> result = new ArrayList<>();

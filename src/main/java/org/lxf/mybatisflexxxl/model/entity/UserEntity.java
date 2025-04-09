@@ -5,7 +5,6 @@ import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
-import org.lxf.mybatisflexxxl.common.annotation.Level;
 import org.lxf.mybatisflexxxl.model.demo.BaseDTOCastDemo;
 import org.lxf.mybatisflexxxl.model.demo.UserDemo;
 
@@ -20,7 +19,7 @@ import org.lxf.mybatisflexxxl.model.demo.UserDemo;
 @EqualsAndHashCode(callSuper = true)
 @Table("user")
 @FieldNameConstants
-public class UserEntity extends BaseTimeOrUser implements BaseDTOCastDemo<UserEntity, UserDemo> {
+public class UserEntity extends BaseTime implements BaseDTOCastDemo<UserEntity, UserDemo> {
     private String name;
 
     private String phone;

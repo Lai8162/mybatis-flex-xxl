@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <!-- 动态变量定义 -->
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{REQUEST_ID}] [%X{IP}] [%t] %-5level %40.40logger{39} - %msg%n</Property>
+        <Property name="LOG_DIR">${sys:LOG_PATH:-./logs}</Property>
+        <Property name="ERROR_LOG_DIR">${LOG_DIR}/errors</Property>
+    </Properties>
+
+    <!-- Appenders -->
+    <Appenders>
+        <!-- 控制台彩色输出（开发环境） -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false"/>
+        </Console>
+
+        <!-- 主日志文件（异步+滚动压缩） -->
+        <RollingFile name="MainAppender" fileName="${LOG_DIR}/app.log"
+                     filePattern="${LOG_DIR}/archive/app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="200MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
+        <!-- 错误日志独立文件（同步保证实时性） -->
+        <RollingFile name="ErrorAppender" fileName="${ERROR_LOG_DIR}/error.log"
+                     filePattern="${ERROR_LOG_DIR}/error-%d{yyyy-MM-dd}.log.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- 异步缓冲队列（生产环境推荐） -->
+        <Async name="AsyncMain" bufferSize="2048">
+            <AppenderRef ref="MainAppender"/>
+        </Async>
+    </Appenders>
+
+    <!-- Loggers -->
+    <Loggers>
+        <!-- 框架日志降噪 -->
+        <Logger name="org.springframework" level="WARN"/>
+        <Logger name="org.hibernate" level="ERROR"/>
+
+        <!-- 业务日志独立通道 -->
+        <Logger name="com.your.package" level="DEBUG" additivity="false">
+            <AppenderRef ref="AsyncMain"/>
+            <AppenderRef ref="ErrorAppender"/>
+        </Logger>
+
+        <!-- 根日志配置 -->
+        <Root level="INFO">
+            <AppenderRef ref="Console" level="INFO"/>
+            <AppenderRef ref="AsyncMain" level="INFO"/>
+            <AppenderRef ref="ErrorAppender" level="ERROR"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/query")
     public Response<PageResponse<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
-        return Response.ok(new PageResponse<>(userService.pageQuery(pageQueryForm, UserVO.class)));
+        return Response.ok(new PageResponse<>(userService.basePageQuery(pageQueryForm, UserVO.class)));
     }
 
     @PostMapping("/add")
@@ -56,8 +56,13 @@ public class UserController {
         return Response.ok(userService.baseStatistics(statisticsForm, UserEntity.class));
     }
 
-    @PostMapping("/excelExport")
+    @PostMapping("/excel/export")
     public void excelExport(HttpServletResponse response, @RequestBody @Valid ExcelExportForm excelExportForm) throws IOException {
         userService.baseExcelExport(response, excelExportForm, "用户详情数据", UserEntity.class, UserDemo.class);
+    }
+
+    @PostMapping("/template/export")
+    public void templateExport(HttpServletResponse response, @RequestBody @Valid ExcelExportForm excelExportForm) throws IOException {
+        userService.baseTemplateExport(response, "UserUploadTemplate.xlsx", excelExportForm.getFileName());
     }
 }
