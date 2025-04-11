@@ -55,6 +55,18 @@ public interface BaseService<Entity> extends IService<Entity> {
     /**
      * 基础分页查询
      *
+     * @param pageQueryForm 查询表单
+     * @param clazz         类定义
+     * @return Page mybatisFlex分页对象
+     */
+    default <DTO> Page<?> basePageQuery(PageQueryForm pageQueryForm, Class<DTO> clazz, boolean isHandleLevel) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        return basePageQuery(queryWrapper, pageQueryForm, clazz, isHandleLevel);
+    }
+
+    /**
+     * 基础分页查询
+     *
      * @param queryWrapper  查询wrapper
      * @param pageQueryForm 查询表单
      * @param clazz         类定义

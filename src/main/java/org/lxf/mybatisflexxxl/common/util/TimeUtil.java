@@ -12,7 +12,7 @@ import java.util.Date;
  * @version 1.0
  * @since 2025/4/6 16:31
  */
-public class TimeUtil {
+public class TimeUtil extends DateUtil {
     public static void main(String[] args) {
         String str1 = DateUtil.format(new Date(), "YYYY-MM-dd HH:mm:ss");
         System.out.println(str1);

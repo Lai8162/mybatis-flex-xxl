@@ -1,9 +1,9 @@
 package org.lxf.mybatisflexxxl.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mybatisflex.annotation.Column;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.lxf.mybatisflexxxl.common.annotation.Level;
 
 import java.util.Date;
 
@@ -18,8 +18,10 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class BaseTime extends BaseLongId {
     @Column(onInsertValue = "now()")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @Column(onInsertValue = "now()")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date modifyTime;
 }

@@ -1,8 +1,10 @@
 package org.lxf.mybatisflexxxl.common.util;
 
+import cn.hutool.core.date.DateUtil;
 import org.lxf.mybatisflexxxl.common.annotation.Level;
 
 import java.lang.reflect.Field;
+import java.sql.Time;
 import java.util.*;
 
 /**
@@ -89,11 +91,19 @@ public class FieldNameUtil {
             field.setAccessible(true);
             if (level == null) {
                 if (realLevel >= 1) {
-                    result.put(field.getName(), field.get(entity));
+                    if (field.getType() == Date.class) {
+                        result.put(field.getName(), TimeUtil.formatDateTime((Date) field.get(entity)));
+                    } else {
+                        result.put(field.getName(), field.get(entity));
+                    }
                 }
             } else {
                 if (level.value() <= realLevel) {
-                    result.put(field.getName(), field.get(entity));
+                    if (field.getType() == Date.class) {
+                        result.put(field.getName(), TimeUtil.formatDateTime((Date) field.get(entity)));
+                    } else {
+                        result.put(field.getName(), field.get(entity));
+                    }
                 }
             }
         }
