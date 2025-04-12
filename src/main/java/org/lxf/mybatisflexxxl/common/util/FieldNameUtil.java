@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import org.lxf.mybatisflexxxl.common.annotation.Level;
 
 import java.lang.reflect.Field;
-import java.sql.Time;
 import java.util.*;
 
 /**
@@ -40,7 +39,7 @@ public class FieldNameUtil {
             for (Field field : currentClass.getDeclaredFields()) {
                 String underscoredName;
                 if (castCase) {
-                    underscoredName = camelToUnderStr(field.getName());
+                    underscoredName = StringUtil.lowerCamelToSnake(field.getName());
                 } else {
                     underscoredName = field.getName();
                 }
@@ -49,16 +48,6 @@ public class FieldNameUtil {
             currentClass = currentClass.getSuperclass();  // 向上查找父类字段
         }
         return fieldNames;
-    }
-
-    /**
-     * 驼峰转下划线格式（例如：employeeNumber -> employee_number）
-     *
-     * @param camelCaseName 小驼峰字符串
-     * @return 下划线格式的字符串
-     */
-    public static String camelToUnderStr(String camelCaseName) {
-        return camelCaseName.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
 
     /**
@@ -92,7 +81,7 @@ public class FieldNameUtil {
             if (level == null) {
                 if (realLevel >= 1) {
                     if (field.getType() == Date.class) {
-                        result.put(field.getName(), TimeUtil.formatDateTime((Date) field.get(entity)));
+                        result.put(field.getName(), DateUtil.formatDateTime((Date) field.get(entity)));
                     } else {
                         result.put(field.getName(), field.get(entity));
                     }
@@ -100,7 +89,7 @@ public class FieldNameUtil {
             } else {
                 if (level.value() <= realLevel) {
                     if (field.getType() == Date.class) {
-                        result.put(field.getName(), TimeUtil.formatDateTime((Date) field.get(entity)));
+                        result.put(field.getName(), DateUtil.formatDateTime((Date) field.get(entity)));
                     } else {
                         result.put(field.getName(), field.get(entity));
                     }

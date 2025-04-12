@@ -6,7 +6,6 @@ import com.alibaba.excel.EasyExcel;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +16,9 @@ import org.lxf.mybatisflexxxl.common.enumcase.ResponseCodeEnum;
 import org.lxf.mybatisflexxxl.common.exception.BusinessException;
 import org.lxf.mybatisflexxxl.common.response.DeleteResponse;
 import org.lxf.mybatisflexxxl.common.util.FieldNameUtil;
+import org.lxf.mybatisflexxxl.common.util.StringUtil;
 import org.lxf.mybatisflexxxl.form.*;
 import org.lxf.mybatisflexxxl.model.demo.BaseDTOCastDemo;
-import org.lxf.mybatisflexxxl.model.entity.UserEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static com.mybatisflex.core.query.QueryMethods.sum;
 
@@ -311,7 +309,7 @@ public interface BaseService<Entity> extends IService<Entity> {
                 continue;
             }
             // 去除前后空格，并将其转换为小写下划线格式
-            String tempMetric = FieldNameUtil.camelToUnderStr(metric.trim());
+            String tempMetric = StringUtil.lowerCamelToSnake(metric.trim());
             if (!tempMetric.contains("__")) {
                 checkFieldExist(fieldSet, tempMetric);
                 queryWrapper.select(tempMetric);
@@ -335,7 +333,7 @@ public interface BaseService<Entity> extends IService<Entity> {
         Set<String> fieldSet = FieldNameUtil.getUnderScoredFieldNames(clazz);
         String[] groupFieldArray = groupField.split(",");
         for (String field : groupFieldArray) {
-            String tempField = FieldNameUtil.camelToUnderStr(field.trim());
+            String tempField = StringUtil.lowerCamelToSnake(field.trim());
             checkFieldExist(fieldSet, tempField);
             queryWrapper.groupBy(tempField);
         }

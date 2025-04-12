@@ -1,4 +1,4 @@
-package org.lxf.mybatisflexxxl.model.entity;
+package org.lxf.mybatisflexxxl.model.entity.base;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

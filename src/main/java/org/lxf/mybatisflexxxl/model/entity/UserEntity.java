@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 import org.lxf.mybatisflexxxl.model.demo.BaseDTOCastDemo;
 import org.lxf.mybatisflexxxl.model.demo.UserDemo;
+import org.lxf.mybatisflexxxl.model.entity.base.BaseTime;
 
 /**
  * 用户实体
@@ -16,9 +17,9 @@ import org.lxf.mybatisflexxxl.model.demo.UserDemo;
  * @since 2025/4/6 16:31
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@Table("user")
+@Table(value = "user")
 @FieldNameConstants
+@EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseTime implements BaseDTOCastDemo<UserEntity, UserDemo> {
     private String name;
 

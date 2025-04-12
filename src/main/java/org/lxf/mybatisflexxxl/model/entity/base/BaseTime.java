@@ -1,4 +1,4 @@
-package org.lxf.mybatisflexxxl.model.entity;
+package org.lxf.mybatisflexxxl.model.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mybatisflex.annotation.Column;
@@ -21,7 +21,7 @@ public class BaseTime extends BaseLongId {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @Column(onInsertValue = "now()")
+    @Column(onInsertValue = "now()", onUpdateValue = "now()")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date modifyTime;
 }

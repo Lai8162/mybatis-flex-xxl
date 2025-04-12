@@ -1,4 +1,4 @@
-package org.lxf.mybatisflexxxl.model.entity;
+package org.lxf.mybatisflexxxl.model.entity.base;
 
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
