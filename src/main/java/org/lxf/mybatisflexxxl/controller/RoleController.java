@@ -1,5 +1,6 @@
 package org.lxf.mybatisflexxxl.controller;
 
+import com.mybatisflex.core.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.lxf.mybatisflexxxl.common.response.PageResponse;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.lxf.mybatisflexxxl.model.entity.table.RoleEntityTableDef.ROLE_ENTITY;
 
 /**
  * 角色API接口控制层
@@ -34,5 +37,10 @@ public class RoleController {
     @PostMapping("/add")
     public Response<Object> add(@RequestBody Object object) {
         return Response.ok(roleService.baseAdd(object, RoleEntity.class));
+    }
+
+    @PostMapping("/testQuery")
+    public Response<?> testQuery() {
+        return Response.ok(roleService.list(QueryWrapper.create().select(ROLE_ENTITY.ALL_COLUMNS)));
     }
 }
