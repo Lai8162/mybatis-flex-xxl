@@ -1,8 +1,7 @@
 package org.lxf.mybatisflexxxl.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lxf.mybatisflexxxl.common.enumcase.ResponseCodeEnum;
-import org.lxf.mybatisflexxxl.common.response.Response;
+import org.lxf.mybatisflexxxl.common.response.Result;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -25,10 +24,10 @@ import java.util.List;
 public class GlobalExceptionAdvice {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public Response<?> businessExceptionHandler(Exception ex) {
+    public Result<?> exceptionHandler(Exception ex) {
         if (ex instanceof BusinessException e) {
             log.error(e.getMessage(), e);
-            return Response.fail(e.getCode(), e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         }
         if (ex instanceof MethodArgumentNotValidException e) {
             BindingResult exceptions = e.getBindingResult();
@@ -38,13 +37,13 @@ public class GlobalExceptionAdvice {
                 if (!errors.isEmpty()) {
                     FieldError fieldError = (FieldError) errors.get(0);
                     log.error(fieldError.getDefaultMessage(), e);
-                    return Response.fail(fieldError.getDefaultMessage(), null);
+                    return Result.fail(fieldError.getDefaultMessage(), null);
                 }
             }
             log.error(e.getMessage(), e);
-            return Response.fail(e.getMessage(), null);
+            return Result.fail(e.getMessage(), null);
         }
         log.error(ex.getMessage(), ex);
-        return Response.fail(ResponseCodeEnum.BAD_REQUEST);
+        return Result.fail(ex.getMessage());
     }
 }

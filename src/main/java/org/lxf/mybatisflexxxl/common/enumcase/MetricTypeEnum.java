@@ -1,5 +1,8 @@
 package org.lxf.mybatisflexxxl.common.enumcase;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 /**
  * 统计指标类型枚举
  *
@@ -21,13 +24,13 @@ public enum MetricTypeEnum {
         this.type = type;
     }
 
-    public static MetricTypeEnum ofType(String type) {
+    public static Optional<MetricTypeEnum> ofType(String type) {
         for (MetricTypeEnum value : MetricTypeEnum.values()) {
             if (value.type.equals(type)) {
-                return value;
+                return Optional.of(value);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public static boolean isValid(String type) {

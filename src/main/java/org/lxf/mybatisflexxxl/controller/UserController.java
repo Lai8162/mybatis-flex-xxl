@@ -3,13 +3,13 @@ package org.lxf.mybatisflexxxl.controller;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.lxf.mybatisflexxxl.common.response.PageResponse;
-import org.lxf.mybatisflexxxl.common.response.Response;
-import org.lxf.mybatisflexxxl.form.*;
-import org.lxf.mybatisflexxxl.model.demo.UserDemo;
-import org.lxf.mybatisflexxxl.model.entity.UserEntity;
-import org.lxf.mybatisflexxxl.model.vo.UserVO;
-import org.lxf.mybatisflexxxl.service.UserService;
+import org.lxf.mybatisflexxxl.common.response.PageResult;
+import org.lxf.mybatisflexxxl.common.response.Result;
+import org.lxf.mybatisflexxxl.dto.request.base.*;
+import org.lxf.mybatisflexxxl.entity.user.UserEntity;
+import org.lxf.mybatisflexxxl.vo.excel.user.UserExport;
+import org.lxf.mybatisflexxxl.dto.response.user.UserDetail;
+import org.lxf.mybatisflexxxl.service.user.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,34 +31,34 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/query")
-    public Response<PageResponse<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
-        return Response.ok(new PageResponse<>(userService.basePageQuery(pageQueryForm, UserVO.class)));
+    public Result<PageResult<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
+        return Result.ok(new PageResult<>(userService.basePageQuery(pageQueryForm, UserDetail.class)));
     }
 
     @PostMapping("/add")
-    public Response<Object> add(@RequestBody Object object) {
-        return Response.ok(userService.baseAdd(object, UserEntity.class));
+    public Result<Object> add(@RequestBody Object object) {
+        return Result.ok(userService.baseAdd(object, UserEntity.class));
     }
 
     @PostMapping("/update")
     public Object update(@RequestBody @Valid UpdateForm updateForm) {
         userService.baseUpdate(updateForm, UserEntity.class);
-        return Response.ok();
+        return Result.ok();
     }
 
     @PostMapping("/delete")
     public Object delete(@RequestBody @Valid DeleteForm deleteForm) {
-        return Response.ok(userService.baseDelete(deleteForm, UserEntity.class));
+        return Result.ok(userService.baseDelete(deleteForm, UserEntity.class));
     }
 
     @PostMapping("/statistics")
     public Object statistics(@RequestBody @Valid StatisticsForm statisticsForm) {
-        return Response.ok(userService.baseStatistics(statisticsForm, UserEntity.class));
+        return Result.ok(userService.baseStatistics(statisticsForm, UserEntity.class));
     }
 
     @PostMapping("/excel/export")
     public void excelExport(HttpServletResponse response, @RequestBody @Valid ExcelExportForm excelExportForm) throws IOException {
-        userService.baseExcelExport(response, excelExportForm, "用户详情数据", UserEntity.class, UserDemo.class);
+        userService.baseExcelExport(response, excelExportForm, "用户详情数据", UserEntity.class, UserExport.class);
     }
 
     @PostMapping("/template/export")

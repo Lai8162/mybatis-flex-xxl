@@ -1,20 +1,17 @@
 package org.lxf.mybatisflexxxl.controller;
 
-import com.mybatisflex.core.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.lxf.mybatisflexxxl.common.response.PageResponse;
-import org.lxf.mybatisflexxxl.common.response.Response;
-import org.lxf.mybatisflexxxl.form.PageQueryForm;
-import org.lxf.mybatisflexxxl.model.entity.RoleEntity;
-import org.lxf.mybatisflexxxl.model.vo.RoleVO;
-import org.lxf.mybatisflexxxl.service.RoleService;
+import org.lxf.mybatisflexxxl.common.response.PageResult;
+import org.lxf.mybatisflexxxl.common.response.Result;
+import org.lxf.mybatisflexxxl.dto.request.base.PageQueryForm;
+import org.lxf.mybatisflexxxl.entity.role.RoleEntity;
+import org.lxf.mybatisflexxxl.dto.response.role.RoleDetail;
+import org.lxf.mybatisflexxxl.service.role.RoleService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.lxf.mybatisflexxxl.model.entity.table.RoleEntityTableDef.ROLE_ENTITY;
 
 /**
  * 角色API接口控制层
@@ -30,17 +27,12 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/query")
-    public Response<PageResponse<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
-        return Response.ok(new PageResponse<>(roleService.basePageQuery(pageQueryForm, RoleVO.class)));
+    public Result<PageResult<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
+        return Result.ok(new PageResult<>(roleService.basePageQuery(pageQueryForm, RoleDetail.class)));
     }
 
     @PostMapping("/add")
-    public Response<Object> add(@RequestBody Object object) {
-        return Response.ok(roleService.baseAdd(object, RoleEntity.class));
-    }
-
-    @PostMapping("/testQuery")
-    public Response<?> testQuery() {
-        return Response.ok(roleService.list(QueryWrapper.create().select(ROLE_ENTITY.ALL_COLUMNS)));
+    public Result<Object> add(@RequestBody Object object) {
+        return Result.ok(roleService.baseAdd(object, RoleEntity.class));
     }
 }

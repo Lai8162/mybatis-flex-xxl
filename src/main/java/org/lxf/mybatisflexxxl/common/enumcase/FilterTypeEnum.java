@@ -2,6 +2,8 @@ package org.lxf.mybatisflexxxl.common.enumcase;
 
 import lombok.Getter;
 
+import java.util.Optional;
+
 /**
  * 查询类型枚举
  *
@@ -33,13 +35,13 @@ public enum FilterTypeEnum {
         this.type = type;
     }
 
-    public static FilterTypeEnum ofType(String type) {
+    public static Optional<FilterTypeEnum> ofType(String type) {
         for (FilterTypeEnum value : FilterTypeEnum.values()) {
             if (value.type.equals(type)) {
-                return value;
+                return Optional.of(value);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public static boolean isValid(String type) {

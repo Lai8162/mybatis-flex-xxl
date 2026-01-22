@@ -2,6 +2,8 @@ package org.lxf.mybatisflexxxl.common.enumcase;
 
 import lombok.Getter;
 
+import java.util.Optional;
+
 /**
  * 返回码枚举
  *
@@ -50,14 +52,14 @@ public enum ResponseCodeEnum {
     /**
      * 根据错误码获取枚举实例
      * @param code 错误码
-     * @return 对应的ErrorCode枚举
+     * @return {@link Optional} 对应的ErrorCode枚举
      */
-    public static ResponseCodeEnum getByCode(int code) {
+    public static Optional<ResponseCodeEnum> getByCode(int code) {
         for (ResponseCodeEnum errorCode : ResponseCodeEnum.values())  {
             if (errorCode.getCode()  == code) {
-                return errorCode;
+                return Optional.of(errorCode);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

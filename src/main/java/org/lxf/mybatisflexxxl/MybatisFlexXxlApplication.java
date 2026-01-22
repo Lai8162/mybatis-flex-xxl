@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("org.lxf.mybatisflexxxl.model.mapper")
+@MapperScan("org.lxf.mybatisflexxxl.mapper")
 public class MybatisFlexXxlApplication {
 
     public static void main(String[] args) {
