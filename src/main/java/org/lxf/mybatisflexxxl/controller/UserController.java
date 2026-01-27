@@ -7,8 +7,8 @@ import org.lxf.mybatisflexxxl.common.response.PageResult;
 import org.lxf.mybatisflexxxl.common.response.Result;
 import org.lxf.mybatisflexxxl.dto.request.base.*;
 import org.lxf.mybatisflexxxl.entity.user.UserEntity;
-import org.lxf.mybatisflexxxl.vo.excel.user.UserExport;
-import org.lxf.mybatisflexxxl.dto.response.user.UserDetail;
+import org.lxf.mybatisflexxxl.vo.excel.user.UserExportVO;
+import org.lxf.mybatisflexxxl.vo.response.user.UserDetailVO;
 import org.lxf.mybatisflexxxl.service.user.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/query")
     public Result<PageResult<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
-        return Result.ok(new PageResult<>(userService.basePageQuery(pageQueryForm, UserDetail.class)));
+        return Result.ok(new PageResult<>(userService.basePageQuery(pageQueryForm, UserDetailVO.class)));
     }
 
     @PostMapping("/add")
@@ -58,7 +58,7 @@ public class UserController {
 
     @PostMapping("/excel/export")
     public void excelExport(HttpServletResponse response, @RequestBody @Valid ExcelExportForm excelExportForm) throws IOException {
-        userService.baseExcelExport(response, excelExportForm, "用户详情数据", UserEntity.class, UserExport.class);
+        userService.baseExcelExport(response, excelExportForm, "用户详情数据", UserEntity.class, UserExportVO.class);
     }
 
     @PostMapping("/template/export")

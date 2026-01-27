@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 import org.lxf.mybatisflexxxl.common.excel.ExcelExporter;
-import org.lxf.mybatisflexxxl.vo.excel.user.UserExport;
+import org.lxf.mybatisflexxxl.vo.excel.user.UserExportVO;
 import org.lxf.mybatisflexxxl.entity.base.BaseTime;
 
 /**
@@ -20,7 +20,7 @@ import org.lxf.mybatisflexxxl.entity.base.BaseTime;
 @Table(value = "user")
 @FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
-public class UserEntity extends BaseTime implements ExcelExporter<UserEntity, UserExport> {
+public class UserEntity extends BaseTime implements ExcelExporter<UserEntity, UserExportVO> {
     private String name;
 
     private String phone;
@@ -34,9 +34,9 @@ public class UserEntity extends BaseTime implements ExcelExporter<UserEntity, Us
     private String account;
 
     @Override
-    public UserExport buildExcel(UserEntity userEntity) {
-        UserExport userExport = new UserExport();
-        BeanUtil.copyProperties(userEntity, userExport);
-        return userExport;
+    public UserExportVO buildExcel(UserEntity userEntity) {
+        UserExportVO userExportVO = new UserExportVO();
+        BeanUtil.copyProperties(userEntity, userExportVO);
+        return userExportVO;
     }
 }

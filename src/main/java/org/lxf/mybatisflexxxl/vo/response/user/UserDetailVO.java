@@ -1,4 +1,4 @@
-package org.lxf.mybatisflexxxl.dto.response.user;
+package org.lxf.mybatisflexxxl.vo.response.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,5 +13,5 @@ import org.lxf.mybatisflexxxl.entity.user.UserEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserDetail extends UserEntity {
+public class UserDetailVO extends UserEntity {
 }

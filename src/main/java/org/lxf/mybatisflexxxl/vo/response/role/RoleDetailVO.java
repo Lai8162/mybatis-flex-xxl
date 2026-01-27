@@ -1,4 +1,4 @@
-package org.lxf.mybatisflexxxl.dto.response.role;
+package org.lxf.mybatisflexxxl.vo.response.role;
 
 import com.mybatisflex.annotation.RelationOneToOne;
 import lombok.Data;
@@ -16,7 +16,7 @@ import org.lxf.mybatisflexxxl.entity.user.UserEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RoleDetail extends RoleEntity {
+public class RoleDetailVO extends RoleEntity {
     @RelationOneToOne(selfField = "creatorId", targetField = "id")
     @Level(2)
     private UserEntity creator;

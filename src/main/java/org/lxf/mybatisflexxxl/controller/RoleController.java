@@ -6,7 +6,7 @@ import org.lxf.mybatisflexxxl.common.response.PageResult;
 import org.lxf.mybatisflexxxl.common.response.Result;
 import org.lxf.mybatisflexxxl.dto.request.base.PageQueryForm;
 import org.lxf.mybatisflexxxl.entity.role.RoleEntity;
-import org.lxf.mybatisflexxxl.dto.response.role.RoleDetail;
+import org.lxf.mybatisflexxxl.vo.response.role.RoleDetailVO;
 import org.lxf.mybatisflexxxl.service.role.RoleService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +28,7 @@ public class RoleController {
 
     @PostMapping("/query")
     public Result<PageResult<?>> pageQuery(@RequestBody @Valid PageQueryForm pageQueryForm) {
-        return Result.ok(new PageResult<>(roleService.basePageQuery(pageQueryForm, RoleDetail.class)));
+        return Result.ok(new PageResult<>(roleService.basePageQuery(pageQueryForm, RoleDetailVO.class)));
     }
 
     @PostMapping("/add")

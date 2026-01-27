@@ -19,7 +19,7 @@ import lombok.Data;
 @ColumnWidth(40)
 @HeadStyle(fillForegroundColor = 42, fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND)
 @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.CENTER)
-public class UserExport {
+public class UserExportVO {
     @ExcelProperty("名称")
     private String name;
 
